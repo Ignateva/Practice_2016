@@ -3,7 +3,7 @@
 \usepackage [T2A] {fontenc}
 \linespread{1.3} %полуторный межстрочный интервал
 \usepackage[english,russian]{babel}%используем русский и английский языки с переносами
-\usepackage[dvips]{graphicx} 
+\usepackage[final]{graphicx} 
 \graphicspath{{images/}}%путь к рисункам
 \usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
 \renewcommand\contentsname{Projects List} %%% renaming the Table of Contents
@@ -139,6 +139,66 @@
 За этот день я проработала все эти модели, последние из них смоделировала в AnyLogic за исключением анимации, ведь по индивидуальному заданию модели в разных СИМ должны работать без визуализации моделирования.
 
 Учебное пособие В.Д. Боева "Компьютерное моделирование. Пособие для практических занятий, курсового и дипломного проектирования в AnyLogic 7" содержит ту же информацию, но оформлено в виде книги.
-\chapter{Выполнение индивидуального задания}
 
+\chapter{Выполнение индивидуального задания}
+\section{Описание моделей СМО}
+Для выполнения работы нужно создать модели СМО М/М/1 с двумя видами приоритетов (ДОБП, ДООП) для двух классов заявок. 
+
+Обозначение СМО M/M/1  в символике Кендалла значит, что:
+\begin{enumerate} %перечень
+\item интервалы времени между моментами поступления заявок в систему распределены по экспоненциальному (показательному) закону;
+\item длительность обслуживания заявок в приборе распределена по экспоненциальному (показательному) закону;
+\item один обслуживающий прибор в системе;
+\item накопитель - неограниченной ёмкости.
+\end{enumerate}
+
+Бесприоритетная дисциплина обслуживания (ДО БП) - это дисциплина обслуживания, при которой заявки выбираются на обслуживание в порядке поступления.
+
+Дисциплина обслуживания с относительными приоритетами (ДО ОП) - это дисциплина обслуживания, при которой поступление в систему заявки с более высоким приоритетом по сравнению с обслуживаемой в приборе не приводит к прерыванию обслуживания, но при выборе заявки на обслуживание, выбирается заявка с наибольшим приоритетом. 
+
+\begin{figure}[h] %определить место рисунка в тексте
+\center{\includegraphics[width=0.5\linewidth]{model}}
+\caption{Схема разработанной модели}
+\label{ris:model}
+\end{figure} %вставить ссылку на рисунок
+
+\section{Создание моделей СМО в GPSS}
+Для начала создадим модель СМО, показанную на Рис.~\ref{ris:model}, в GPSS.
+
+Для ДО БП:\par\noindent
+TRA1	VARIABLE	Exponential(1,0,10) \par\noindent
+TRA2	VARIABLE	Exponential(2,0,10) \par\noindent
+TOB1	VARIABLE	Exponential(3,0,1) \par\noindent
+TOB2	VARIABLE	Exponential(4,0,1)  \par              
+GENERATE	V\$TRA1 ;генерирование заявок 1-го класса (загрузка = 0.1)\par 
+ASSIGN 	time1,V\$TOB1 \par
+TRANSFER ,begin1 \par
+GENERATE	V\$TRA2 ;генерирование заявок 2-го класса (загрузка = 0.1)\par 
+ASSIGN 	time1,V\$TOB2 \par
+TRANSFER ,begin1 \par\noindent
+begin1	QUEUE	Queue1 \par
+SEIZE 	Uzel \par
+DEPART	Queue1 \par
+ADVANCE 	P\$time1 \par
+RELEASE 	Uzel \par
+TERMINATE 1 \par
+\vspace{0.5cm} 
+Модель с относительными приоритетами почти не отличается от вышенаписанной модели с бесприоритетной дисциплиной обслуживания, только при генерации заявок второго класса приоритет будет задаваться равным 2 вручную, а не равным 1 по умолчанию, чтобы при выборе заявки на обслуживание, выбиралась заявка второго класса(если хотя бы одна из них есть в системе), т.е. заявка с большим приоритетом:\par\noindent
+TRA1	VARIABLE	Exponential(1,0,10) \par\noindent
+TRA2	VARIABLE	Exponential(2,0,10) \par\noindent
+TOB1	VARIABLE	Exponential(3,0,1) \par\noindent
+TOB2	VARIABLE	Exponential(4,0,1)  \par              
+GENERATE	V\$TRA1 \par 
+ASSIGN 	time1,V\$TOB1 \par
+TRANSFER ,begin1 \par
+GENERATE	V\$TRA2,,,,2 \par 
+ASSIGN 	time1,V\$TOB2 \par
+TRANSFER ,begin1 \par\noindent
+begin1	QUEUE	Queue1 \par
+SEIZE 	Uzel \par
+DEPART	Queue1 \par
+ADVANCE 	P\$time1 \par
+RELEASE 	Uzel \par
+TERMINATE 1 \par
+\section{Создание моделей СМО в AnyLogic}
 \end{document}
