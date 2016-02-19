@@ -162,7 +162,8 @@
 \label{ris:model}
 \end{figure} %вставить ссылку на рисунок
 
-\section{Создание моделей СМО в GPSS}
+\section{Система GPSS World}
+\subsection{Создание моделей СМО в GPSS}
 Для начала создадим модель СМО, показанную на Рис.~\ref{ris:model}, в GPSS.
 
 Для ДО БП:\par\noindent
@@ -200,45 +201,7 @@ DEPART	Queue1 \par
 ADVANCE 	P\$time1 \par
 RELEASE 	Uzel \par
 TERMINATE 1 \par
-\section{Создание моделей СМО в AnyLogic}
-\includegraphics[width=0.5\linewidth]{model_AnyLogic}
-
-Так как нам нужно создать полностью эквивалентные модели СМО в системах GPSS World и Anylogic (т.е. модели должны рассчитывать одинаковое количество характеристик и работать без визуализации моделирования), в AnyLogic дополнительно был написан код, который считает загрузку прибора, среднюю длину очереди и среднее время ожидания, а так же перед "прогоном" модели, чтобы повысить скорость выполнения, отключим графический интерфейс, для этого будем использовать простой эксперимент, а именно напишем в свойстве нашего эксперимента следующий код:\par
-getEngine().setRealTimeMode( false );\par
-getPresentation().getPanel().setFrameManagementAdaptive( false );\par
-getPresentation().getPanel().setFrameRate( 0.1 );\par\noindent
-который убирает анимацию при "прогоне" модели.
-
-Для реализации ДО ОП был написан класс заявки, хранящий переменную, обозначающую приоритет. При создании заявки, эта переменная приравнивалась 1 или 2, в зависимости от класса заявки, а на обслуживание в приборе из очереди выбиралась заявка с большим приоритетом. 
-\vspace{0.5cm} \par\noindent
-public class Class2 extends com.anylogic.libraries.enterprise.Entity implements Serializable \{\par\noindent
-public double time1;\par\noindent
-public int type;\par\noindent
-public double start\_waiting;\par\noindent
-public Class2() \{\}\par\noindent
-public Class2(double time1, int type) \{\par
-this.time1 = time1;\par
-this.type = type;\par\noindent
-this.start\_waiting = start\_waiting;\par\noindent
-\} \par\noindent
-public double Start\_waiting()\{\par
-return start\_waiting;\par\noindent
-\}\par\noindent
-public int Type()\{\par
-return type;\par\noindent
-\}\par\noindent
-public double Time1()\{\par
-return time1;\par\noindent
-\}\par\noindent
-@Override\par\noindent
-public String toString() \{\par
-return  \par
-"time1 = " + time1 + \par
-"type = " + type + \par
-"start\_waiting =" + start\_waiting; \par
-\}\par\noindent
-\}\par
-\section{Замеры времени моделирования в GPSS}
+\subsection{Замеры времени моделирования в GPSS}
 В процессе замеров времени было проведено девять независимых экспериментов для каждой СМО: для разных соотношений загрузки классов (0.1+0.1, 0.3+0.3, 0.48+0.48), а также для разного количества пропущенных заявок ($10^6$, $5*10^6$, $10^7$).
 
 \begin{table}[h!]
@@ -316,7 +279,48 @@ return  \par
 \hline
 \end{tabular}
 \end{table} 
-\section{Замеры времени моделирования в AnyLogic}
+
+\section{Система AnyLogic 7.1}
+\subsection{Создание моделей СМО в AnyLogic}
+\includegraphics[width=0.5\linewidth]{model_AnyLogic}
+
+Так как нам нужно создать полностью эквивалентные модели СМО в системах GPSS World и Anylogic (т.е. модели должны рассчитывать одинаковое количество характеристик и работать без визуализации моделирования), в AnyLogic дополнительно был написан код, который считает загрузку прибора, среднюю длину очереди и среднее время ожидания, а так же перед "прогоном" модели, чтобы повысить скорость выполнения, отключим графический интерфейс, для этого будем использовать простой эксперимент, а именно напишем в свойстве нашего эксперимента следующий код:\par
+getEngine().setRealTimeMode( false );\par
+getPresentation().getPanel().setFrameManagementAdaptive( false );\par
+getPresentation().getPanel().setFrameRate( 0.1 );\par\noindent
+который убирает анимацию при "прогоне" модели.
+
+Для реализации ДО ОП был написан класс заявки, хранящий переменную, обозначающую приоритет. При создании заявки, эта переменная приравнивалась 1 или 2, в зависимости от класса заявки, а на обслуживание в приборе из очереди выбиралась заявка с большим приоритетом. 
+\vspace{0.5cm} \par\noindent
+public class Class2 extends com.anylogic.libraries.enterprise.Entity implements Serializable \{\par\noindent
+public double time1;\par\noindent
+public int type;\par\noindent
+public double start\_waiting;\par\noindent
+public Class2() \{\}\par\noindent
+public Class2(double time1, int type) \{\par
+this.time1 = time1;\par
+this.type = type;\par\noindent
+this.start\_waiting = start\_waiting;\par\noindent
+\} \par\noindent
+public double Start\_waiting()\{\par
+return start\_waiting;\par\noindent
+\}\par\noindent
+public int Type()\{\par
+return type;\par\noindent
+\}\par\noindent
+public double Time1()\{\par
+return time1;\par\noindent
+\}\par\noindent
+@Override\par\noindent
+public String toString() \{\par
+return  \par
+"time1 = " + time1 + \par
+"type = " + type + \par
+"start\_waiting =" + start\_waiting; \par
+\}\par\noindent
+\}\par
+
+\subsection{Замеры времени моделирования в AnyLogic}
 Количество экспериментов для СИМ AnyLogic аналогично системе GPSS World.
 
 \begin{table}[h!]
@@ -391,6 +395,116 @@ return  \par
 \end{tabular}
 \end{table} 
 
+
+\section{Система визуального проектирования имитационных моделей Arena}
+\subsection{Описание системы проектирования}
+Arena, разработанное компанией Systems Modeling Corporation программное обеспечение для имитационного моделирования, позволяет создавать подвижные компьютерные модели, используя которые можно адекватно представить очень многие реальные системы. Самая первая версия этой системы увидела свет в 1993 г. В целом система исключительно проста в использовании. 
+
+Основа технологий Arena - язык моделирования SIMAN и система Cinema Animation. SIMAN, впервые реализованный в 1982г. - чрезвычайно гибкий и выразительный язык моделирования. Для отображения результатов моделирования используется анимационная система Cinema animation. Процесс моделирования таков: пользователь строит в визуальном редакторе системы Arena модель, затем система генерирует по ней соответствующий код на SIMAN, после чего автоматически запускается Cinema animation. 
+Имитационная модель в Arena включает следующие основные эле­менты: источники и стоки (Create и Dispose), процессы (Process) и очереди (Queue).
+
+Источники - это элементы, от которых в модель поступает информация или объекты. Скорость поступления данных или объектов от источ­ника обычно задается статистической функцией.
+
+Сток - это устройство для приема информации или объектов. Время обработки объектов (производительность) в разных процессах могут быть разными. В результате перед некоторыми процессами могут накапливаться
+объекты, ожидающие своей очереди. Часто целью имитационного модели­рования является минимизация количества объектов в очередях.
+
+Процессы - это аналог работ в функциональной модели. В имита­ционной модели может быть задана производительность процессов. 
+
+\subsection{Создание моделей СМО в Arena}
+В модели создадим два генератора транзактов для каждого класса заявок, а также два модуля Assign, которые призваны указать атрибуты: приоритет заявки (для ДО ОП) и время обслуживания. Теперь обратимся к свойствам очереди Model.Queue. Это можно сделать с помощью невизуального модуля Queue. Для ДО ОП установим тип очереди «По наибольшему значению атрибута» и укажем имя нашего атрибута pri(приориет). Для ДО БП  установим тип очереди «FIFO» (в порядке поступления).
+
+\begin{figure}[h] %определить место рисунка в тексте
+\center{\includegraphics[width=1\linewidth]{model_Arena}}
+\caption{Модель СМО в системе Arena}
+\label{ris:model_Arena}
+\end{figure} %вставить ссылку на рисунок
+
+\begin{figure}[h] %определить место рисунка в тексте
+\center{\includegraphics[width=0.7\linewidth]{queue_pri}}
+\caption{Настройка очереди с относительными приоритетами}
+\label{ris:queue_pri}
+\end{figure} %вставить ссылку на рисунок
+
+\begin{figure}[h] %определить место рисунка в тексте
+\center{\includegraphics[width=0.7\linewidth]{queue}}
+\caption{Настройка очереди с бесприоритетной дисциплиной обслуживания}
+\label{ris:queue}
+\end{figure} %вставить ссылку на рисунок
+
+\subsection{Замеры времени моделирования в Arena}
+Количество экспериментов для аналогично предыдущим системам.
+
+\begin{table}[h!]
+\caption{Результаты измерений СМО с ДО БП}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+ & \multicolumn{3}{|c|}{1.000.000} & \multicolumn{3}{|c|}{5.000.000} & \multicolumn{3}{|c|}{10.000.000} \\
+\hline
+ & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 \\
+\hline
+1 замер &  &  &  &  &  &  &  &  &  \\
+\hline
+2 замер &  &  &  &  &  &  &  &  &  \\
+\hline
+3 замер &  &  &  &  &  &  &  &  &  \\
+\hline
+4 замер &  &  &  &  &  &  &  &  & \\
+\hline
+Ср.знач. &  &  &  &  &  &  &  &  &  \\
+\hline
+\end{tabular}
+\end{table} 
+
+\begin{table}[h!]
+\caption{Доверительные интервалы измерений СМО с ДО БП}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ Количество заявок & Среднее значение & С.к.о. & Дов. вероятность & Дов. интервал & Результат\\
+\hline
+1.000.000 &  &  & 95\% &  &  ±  \\
+\hline
+5.000.000 &  &  & 95\% &  & ±  \\
+\hline
+10.000.000 &  &  & 95\% & &  ±  \\
+\hline
+\end{tabular}
+\end{table} 
+
+\begin{table}[h!]
+\caption{Результаты измерений СМО с ДО ОП}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+ & \multicolumn{3}{|c|}{1.000.000} & \multicolumn{3}{|c|}{5.000.000} & \multicolumn{3}{|c|}{10.000.000} \\
+\hline
+ & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 & 0.1+0.1 & 0.3+0.3 & 0.48+0.48 \\
+\hline
+1 замер &  &  &  &  &  &  &  &  &   \\
+\hline
+2 замер &  &  &  &  &  &  &  &  &  \\
+\hline
+3 замер &  &  &  &  &  &  &  &  &   \\
+\hline
+4 замер &  &  &  &  &  &  &  &  & \\
+\hline
+Ср.знач. &   &  &  &  &  &  &  &  &  \\
+\hline
+\end{tabular}
+\end{table} 
+
+\begin{table}[h!]
+\caption{Доверительные интервалы измерений СМО с ДО ОП}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ Количество заявок & Среднее значение & С.к.о. & Дов. вероятность & Дов. интервал & Результат\\
+\hline
+1.000.000 &  &  & 95\% &  &  ±  \\
+\hline
+5.000.000 &  &  & 95\% & &  ±  \\
+\hline
+10.000.000 &  &  & 95\% & &  ±  \\
+\hline
+\end{tabular}
+\end{table} 
 \section{Сравнение}
 Сравним полученные результаты для разных СМО в системах GPSS World и AnyLogic: 
 
